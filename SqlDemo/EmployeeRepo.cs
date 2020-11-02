@@ -56,6 +56,10 @@ namespace SqlDemo
             {
                 throw new Exception(e.Message);
             }
+            finally
+            {
+                this.connection.Close();
+            }
         }
     }
 }
