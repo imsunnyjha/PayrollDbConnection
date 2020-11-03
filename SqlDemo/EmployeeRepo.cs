@@ -1,5 +1,6 @@
 ﻿using System.Data.SqlClient;
 using System;
+using System.Data;
 
 namespace SqlDemo
 {
@@ -28,7 +29,7 @@ namespace SqlDemo
                         {
                             employeePayroll.employeeId = dr.GetInt32(0);
                             employeePayroll.employeeName = dr.GetString(1);
-                            employeePayroll.basicPay = dr.GetDecimal(2);
+                            employeePayroll.basic_pay = dr.GetDecimal(2);
                             employeePayroll.startDate = dr.GetDateTime(3);
                             employeePayroll.Gender = dr.GetString(4);
                             employeePayroll.phoneNumber = dr.GetString(5);
@@ -40,7 +41,7 @@ namespace SqlDemo
                             employeePayroll.netPay = dr.GetDecimal(11);
                             
                             //Display retrieved record
-                            Console.WriteLine("{0},{1},{2},{3},{4},{5}",employeePayroll.employeeId,employeePayroll.employeeName,employeePayroll.phoneNumber,employeePayroll.address,employeePayroll.department,employeePayroll.Gender,employeePayroll.phoneNumber);
+                            Console.WriteLine("{0},{1},{2},{3},{4},{5}",employeePayroll.employeeId,employeePayroll.employeeName,employeePayroll.basic_pay,employeePayroll.address,employeePayroll.department,employeePayroll.Gender,employeePayroll.phoneNumber);
                             Console.WriteLine("\n");
                         }
                     }
@@ -59,6 +60,50 @@ namespace SqlDemo
             finally
             {
                 this.connection.Close();
+            }
+        }
+        public bool AddEmployee(EmployeePayroll payroll)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand command = new SqlCommand("spAddEmployeeDetail", this.connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+
+                    command.Parameters.AddWithValue("@name", payroll.employeeName);
+                    command.Parameters.AddWithValue("@basic_Pay", payroll.basic_pay);
+                    command.Parameters.AddWithValue("@start_date", payroll.startDate);
+                    command.Parameters.AddWithValue("@Gender", payroll.Gender);
+                    command.Parameters.AddWithValue("@phonenumber", payroll.phoneNumber);
+                    command.Parameters.AddWithValue("@address", payroll.address);
+                    command.Parameters.AddWithValue("@department", payroll.department);
+                    command.Parameters.AddWithValue("@Deductions", payroll.deductions);
+                    command.Parameters.AddWithValue("@taxable_pay", payroll.taxablePay);
+                    command.Parameters.AddWithValue("@income_tax", payroll.tax);
+                    command.Parameters.AddWithValue("@net_pay", payroll.netPay);
+                    
+
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+            finally
+            {
+                connection.Close();
             }
         }
     }
