@@ -2,7 +2,7 @@
 
 namespace SqlDemo
 {
-    class EmployeePayroll
+    public class EmployeePayroll
     {
         public int employeeId { get; set; }
         public string employeeName { get; set; }
