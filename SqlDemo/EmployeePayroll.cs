@@ -15,8 +15,6 @@ namespace SqlDemo
         public decimal taxablePay { get; set; }
         public decimal tax { get; set; }
         public decimal netPay { get; set; }
-        public DateTime startDate { get; set; }
-        public string city { get; set; }
-        public string country { get; set; }
+        public DateTime startDate { get; set; } 
     }
 }

@@ -1,6 +1,7 @@
-﻿using System;
-using System.Data;
 using System.Data.SqlClient;
+using System;
+using System.Data;
+
 
 namespace SqlDemo
 {
@@ -42,7 +43,9 @@ namespace SqlDemo
                             employeePayroll.netPay = dr.GetDecimal(11);
 
                             //Display retrieved record
+
                             Console.WriteLine("{0},{1},{2},{3},{4},{5}", employeePayroll.employeeId, employeePayroll.employeeName, employeePayroll.phoneNumber, employeePayroll.address, employeePayroll.department, employeePayroll.Gender, employeePayroll.phoneNumber);
+
                             Console.WriteLine("\n");
                         }
                     }
@@ -63,7 +66,6 @@ namespace SqlDemo
                 this.connection.Close();
             }
         }
-
         public bool AddEmployee(EmployeePayroll payroll)
         {
             try
@@ -106,7 +108,6 @@ namespace SqlDemo
                 connection.Close();
             }
         }
-
         public int UpdateEmployee(SalaryModel model)
         {
             int salary = 0;

@@ -21,7 +21,6 @@ namespace SqlDemo
             employeePayroll.taxablePay      = 19000;
             employeePayroll.tax             = 1900;
             employeePayroll.netPay          = 18100;
-
             Console.WriteLine("Displaying All Data........");
 
             repo.AddEmployee(employeePayroll);
