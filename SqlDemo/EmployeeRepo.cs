@@ -1,12 +1,14 @@
-﻿using System.Data.SqlClient;
-using System;
+﻿using System;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace SqlDemo
 {
-    class EmployeeRepo
+    public class EmployeeRepo
     {
         public static string connectionString = @"Data Source=(LocalDb)\sunnydb;Initial Catalog=Payroll_Service;Integrated Security=True";
-        readonly SqlConnection connection = new SqlConnection(connectionString);
+        private string connectionstring;
+        private readonly SqlConnection connection = new SqlConnection(connectionString);
 
         public void GetAllEmployee()
         {
@@ -28,7 +30,7 @@ namespace SqlDemo
                         {
                             employeePayroll.employeeId = dr.GetInt32(0);
                             employeePayroll.employeeName = dr.GetString(1);
-                            employeePayroll.basicPay = dr.GetDecimal(2);
+                            employeePayroll.basic_pay = dr.GetDecimal(2);
                             employeePayroll.startDate = dr.GetDateTime(3);
                             employeePayroll.Gender = dr.GetString(4);
                             employeePayroll.phoneNumber = dr.GetString(5);
@@ -38,9 +40,9 @@ namespace SqlDemo
                             employeePayroll.taxablePay = dr.GetDecimal(9);
                             employeePayroll.tax = dr.GetDecimal(10);
                             employeePayroll.netPay = dr.GetDecimal(11);
-                            
+
                             //Display retrieved record
-                            Console.WriteLine("{0},{1},{2},{3},{4},{5}",employeePayroll.employeeId,employeePayroll.employeeName,employeePayroll.phoneNumber,employeePayroll.address,employeePayroll.department,employeePayroll.Gender,employeePayroll.phoneNumber);
+                            Console.WriteLine("{0},{1},{2},{3},{4},{5}", employeePayroll.employeeId, employeePayroll.employeeName, employeePayroll.phoneNumber, employeePayroll.address, employeePayroll.department, employeePayroll.Gender, employeePayroll.phoneNumber);
                             Console.WriteLine("\n");
                         }
                     }
@@ -59,6 +61,104 @@ namespace SqlDemo
             finally
             {
                 this.connection.Close();
+            }
+        }
+
+        public bool AddEmployee(EmployeePayroll payroll)
+        {
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand command = new SqlCommand("spAddEmployeeDetail", this.connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@name", payroll.employeeName);
+                    command.Parameters.AddWithValue("@basic_Pay", payroll.basic_pay);
+                    command.Parameters.AddWithValue("@start_date", payroll.startDate);
+                    command.Parameters.AddWithValue("@Gender", payroll.Gender);
+                    command.Parameters.AddWithValue("@phonenumber", payroll.phoneNumber);
+                    command.Parameters.AddWithValue("@address", payroll.address);
+                    command.Parameters.AddWithValue("@department", payroll.department);
+                    command.Parameters.AddWithValue("@Deductions", payroll.deductions);
+                    command.Parameters.AddWithValue("@taxable_pay", payroll.taxablePay);
+                    command.Parameters.AddWithValue("@income_tax", payroll.tax);
+                    command.Parameters.AddWithValue("@net_pay", payroll.netPay);
+
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public int UpdateEmployee(SalaryModel model)
+        {
+            int salary = 0;
+            try
+            {
+                using (connection)
+                {
+                    SqlConnection connection = new SqlConnection(connectionstring);
+                    SalaryModel displayModel = new SalaryModel();
+
+                    SqlCommand command = new SqlCommand("spUpdateEmployeePayroll", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@salaryId", model.salaryId);
+                    command.Parameters.AddWithValue("@salaryAmt", model.salaryAmount);
+                    command.Parameters.AddWithValue("@month", model.month);
+                    command.Parameters.AddWithValue("@empId", model.employeeId);
+                    command.Parameters.AddWithValue("@designation", model.designation);
+                    command.Parameters.AddWithValue("@empName", model.employeeName);
+
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            displayModel.employeeId = reader.GetInt32(0);
+                            displayModel.salaryId = reader.GetInt32(1);
+                            displayModel.salaryAmount = reader.GetInt32(2);
+                            displayModel.month = reader.GetString(3);
+                            displayModel.employeeName = reader.GetString(4);
+                            displayModel.designation = reader.GetString(5); 
+                            salary = displayModel.salaryAmount;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Data found!");
+                    }
+                    reader.Close();
+                    return salary;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                connection.Close();
+                return 0;
+            }
+            finally
+            {
+                connection.Close();
             }
         }
     }

@@ -2,7 +2,7 @@
 
 namespace SqlDemo
 {
-    class EmployeePayroll
+    public class EmployeePayroll
     {
         public int employeeId { get; set; }
         public string employeeName { get; set; }
@@ -10,7 +10,7 @@ namespace SqlDemo
         public string address { get; set; }
         public string department { get; set; }
         public string Gender { get; set; }
-        public decimal basicPay { get; set; }
+        public decimal basic_pay { get; set; }
         public decimal deductions { get; set; }
         public decimal taxablePay { get; set; }
         public decimal tax { get; set; }
