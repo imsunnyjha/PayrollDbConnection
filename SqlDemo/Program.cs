@@ -24,6 +24,13 @@ namespace SqlDemo
             Console.WriteLine("Displaying All Data........");
 
             repo.AddEmployee(employeePayroll);
+            
+            Console.WriteLine("Retrieving Employee from date range.......");
+
+            employeePayroll.startDate = DateTime.Parse("2020-09-05");
+            employeePayroll.endDate = DateTime.Parse("2021-06-20");
+            
+            repo.RetrieveEmployeeBasedOnStartDate(employeePayroll);
         }
     }
 }
