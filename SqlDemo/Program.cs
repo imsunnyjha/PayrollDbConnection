@@ -10,6 +10,7 @@ namespace SqlDemo
 
             EmployeeRepo repo               = new EmployeeRepo();
             EmployeePayroll employeePayroll = new EmployeePayroll();
+            
             employeePayroll.employeeName    = "John";
             employeePayroll.basic_pay       = 20000;
             employeePayroll.startDate       = DateTime.Now;
@@ -23,14 +24,16 @@ namespace SqlDemo
             employeePayroll.netPay          = 18100;
             Console.WriteLine("Displaying All Data........");
 
-            repo.AddEmployee(employeePayroll);
+            
+            //repo.AddEmployee(employeePayroll);
             
             Console.WriteLine("Retrieving Employee from date range.......");
-
             employeePayroll.startDate = DateTime.Parse("2020-09-05");
-            employeePayroll.endDate = DateTime.Parse("2021-06-20");
-            
+            employeePayroll.endDate = DateTime.Parse("2021-06-20");  
             repo.RetrieveEmployeeBasedOnStartDate(employeePayroll);
+
+            Console.WriteLine("Retrieving Sum Avg Min Max from Employee"); 
+            repo.UsingDatabaseFunction(employeePayroll);
         }
     }
 }
