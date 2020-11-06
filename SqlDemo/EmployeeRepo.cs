@@ -256,5 +256,51 @@ namespace SqlDemo
             }
             Console.WriteLine();
         }
+        public int AddEmployeeToPayroll(PayrollModel payrollModel, EmployeePayroll employeePayroll)
+        {
+            int emp_ID = 0;
+            try
+            {
+                using (this.connection)
+                {
+                    SqlCommand command = new SqlCommand("spAddEmployeePayroll", this.connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@employee_name", employeePayroll.employeeName);
+                    command.Parameters.AddWithValue("@phoneno", employeePayroll.phoneNumber);
+                    command.Parameters.AddWithValue("@address", employeePayroll.address);
+                    command.Parameters.AddWithValue("@gender", employeePayroll.Gender);
+                    command.Parameters.AddWithValue("@basic_pay", payrollModel.BasicPay);
+                    command.Parameters.AddWithValue("@deduction", payrollModel.Deductions);
+                    command.Parameters.AddWithValue("@income_tax", payrollModel.IncomeTax);
+                    command.Parameters.AddWithValue("@start_date", DateTime.Now);
+                    this.connection.Open();
+                    int result = command.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                        string query = @"SELECT MAX(employee_id) FROM Employee;";
+                        SqlCommand cmd = new SqlCommand(query, this.connection);
+                        SqlDataReader dr = cmd.ExecuteReader();
+
+                        if (dr.HasRows)
+                        {
+                            while (dr.Read())
+                            {
+                                employeePayroll.employeeId = dr.GetInt32(0);
+                                emp_ID = employeePayroll.employeeId;
+                            }
+                        }
+                    }
+                    return emp_ID;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
     }
 }

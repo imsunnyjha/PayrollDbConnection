@@ -34,6 +34,18 @@ namespace SqlDemo
 
             Console.WriteLine("Retrieving Sum Avg Min Max from Employee"); 
             repo.UsingDatabaseFunction(employeePayroll);
+
+            PayrollModel payroll = new PayrollModel();
+            employeePayroll.employeeName = "Sunny";
+            employeePayroll.phoneNumber = "7521369845";
+            employeePayroll.address = "SanDiago";
+            employeePayroll.Gender = "M";
+
+            payroll.BasicPay = 5000.00;
+            payroll.Deductions = 500;
+            payroll.IncomeTax = 200;
+
+            repo.AddEmployeeToPayroll(payroll, employeePayroll);
         }
     }
 }
